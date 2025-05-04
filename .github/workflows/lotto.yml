@@ -1,6 +1,5 @@
 name: Lotto Automation
 
-# 매주 토요일·화요일 20:00 KST에 동작
 on:
   schedule:
     - cron: '0 10 * * SAT'  # 한국 토요일 19:00 → UTC 10:00
@@ -11,34 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run lotto script
-      env:
-        DHLOTTO_ID:    ${{ secrets.DHLOTTO_ID }}
-        DHLOTTO_PW:    ${{ secrets.DHLOTTO_PW }}
-        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      run: |
-     case "${{ github.event.schedule }}" in
-       '0 10 * * SAT')
-         # 토요일 19시: 자동 구매
-         python purchase_module.py
-         ;;
-       '0 14 * * SAT')
-         # 토요일 23시: 결과 조회 & 알림
-         python fetch_module.py
-         python notify_module.py
-         ;;
-     esac
+      - name: Run lotto script
+        env:
+          DHLOTTO_ID:    ${{ secrets.DHLOTTO_ID }}
+          DHLOTTO_PW:    ${{ secrets.DHLOTTO_PW }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          case "${{ github.event.schedule }}" in
+            '0 10 * * SAT')
+              # 토요일 19시 구매
+              python purchase_module.py
+              ;;
+            '0 14 * * SAT')
+              # 토요일 23시 결과 조회 + 알림
+              python fetch_module.py
+              python notify_module.py
+              ;;
+          esac
