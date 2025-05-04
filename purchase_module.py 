@@ -1,0 +1,15 @@
+cat > purchase_module.py << 'EOF'
+# purchase_module.py
+import os
+from selenium import webdriver
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def purchase_lotto():
+    # TODO: Selenium으로 로또 구매 동작 구현
+    print("자동 구매 함수 호출")
+
+if __name__ == "__main__":
+    purchase_lotto()
+EOF
