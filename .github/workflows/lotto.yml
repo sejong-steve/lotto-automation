@@ -2,8 +2,10 @@ name: Lotto Automation
 
 on:
   schedule:
-    - cron: '0 10 * * SAT'  # 한국 토요일 19:00 → UTC 10:00
-    - cron: '0 14 * * SAT'  # 한국 토요일 23:00 → UTC 14:00
+    # 토요일 19:00 KST → UTC 10:00 에 구매
+    - cron: '0 10 * * SAT'
+    # 토요일 23:00 KST → UTC 14:00 에 결과 조회 & 알림
+    - cron: '0 14 * * SAT'
 
 jobs:
   run-lotto:
@@ -25,18 +27,18 @@ jobs:
 
       - name: Run lotto script
         env:
-          DHLOTTO_ID:    ${{ secrets.DHLOTTO_ID }}
-          DHLOTTO_PW:    ${{ secrets.DHLOTTO_PW }}
+          DHLOTTO_ID:     ${{ secrets.DHLOTTO_ID }}
+          DHLOTTO_PW:     ${{ secrets.DHLOTTO_PW }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID:${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           case "${{ github.event.schedule }}" in
             '0 10 * * SAT')
-              # 토요일 19시 구매
+              # 토요일 19시: 자동 구매
               python purchase_module.py
               ;;
             '0 14 * * SAT')
-              # 토요일 23시 결과 조회 + 알림
+              # 토요일 23시: 결과 조회 & 알림
               python fetch_module.py
               python notify_module.py
               ;;
