@@ -1,6 +1,6 @@
-cat > requirements.txt << 'EOF'
 selenium>=4.10.0
 APScheduler>=3.11.0
 python-telegram-bot>=20.0
 python-dotenv>=1.0.0
-EOF
+requests>=2.31.0
+beautifulsoup4>=4.12.0
