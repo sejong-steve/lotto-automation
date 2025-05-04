@@ -1,6 +1,7 @@
 name: Lotto Automation
 
 on:
+  workflow_dispatch:
   schedule:
     # 토요일 19:00 KST → UTC 10:00 에 구매
     - cron: '0 10 * * SAT'
