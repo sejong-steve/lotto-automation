@@ -1,0 +1,42 @@
+name: Lotto Automation
+
+# 매주 토요일·화요일 20:00 KST에 동작
+on:
+  schedule:
+    - cron: '0 11 * * SAT'  # 한국 토요일 20:00 → UTC 11:00
+    - cron: '0 11 * * TUE'  # 한국 화요일 20:00 → UTC 11:00
+
+jobs:
+  run-lotto:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run lotto script
+      env:
+        DHLOTTO_ID:    ${{ secrets.DHLOTTO_ID }}
+        DHLOTTO_PW:    ${{ secrets.DHLOTTO_PW }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        # 토요일이면 자동 구매 모듈 실행
+        if [[ "${{ github.event.schedule }}" == *SAT* ]]; then
+          python purchase_module.py
+        else
+          # 화요일이면 결과 조회 & 알림
+          python fetch_module.py
+          python notify_module.py
+        fi
+
