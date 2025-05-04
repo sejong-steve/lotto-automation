@@ -3,8 +3,8 @@ name: Lotto Automation
 # 매주 토요일·화요일 20:00 KST에 동작
 on:
   schedule:
-    - cron: '0 11 * * SAT'  # 한국 토요일 20:00 → UTC 11:00
-    - cron: '0 11 * * TUE'  # 한국 화요일 20:00 → UTC 11:00
+    - cron: '0 10 * * SAT'  # 한국 토요일 19:00 → UTC 10:00
+    - cron: '0 14 * * SAT'  # 한국 토요일 23:00 → UTC 14:00
 
 jobs:
   run-lotto:
@@ -31,12 +31,14 @@ jobs:
         TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
-        # 토요일이면 자동 구매 모듈 실행
-        if [[ "${{ github.event.schedule }}" == *SAT* ]]; then
-          python purchase_module.py
-        else
-          # 화요일이면 결과 조회 & 알림
-          python fetch_module.py
-          python notify_module.py
-        fi
-
+     case "${{ github.event.schedule }}" in
+       '0 10 * * SAT')
+         # 토요일 19시: 자동 구매
+         python purchase_module.py
+         ;;
+       '0 14 * * SAT')
+         # 토요일 23시: 결과 조회 & 알림
+         python fetch_module.py
+         python notify_module.py
+         ;;
+     esac
