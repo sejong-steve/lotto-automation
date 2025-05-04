@@ -1,15 +1,37 @@
-cat > purchase_module.py << 'EOF'
 # purchase_module.py
+
 import os
-from selenium import webdriver
+import random
 from dotenv import load_dotenv
+from notify_module import send_telegram
+# from selenium import webdriver   # 실제로 Selenium을 쓰실 경우 이 줄을 살리세요
 
 load_dotenv()
 
-def purchase_lotto():
-    # TODO: Selenium으로 로또 구매 동작 구현
-    print("자동 구매 함수 호출")
+def purchase_lotto(amount: int = 5000):
+    """
+    amount 원어치 Quick-Pick(자동번호) 로또 구매 후,
+    생성된 티켓 번호 리스트를 반환하고 알림을 보냅니다.
+    """
+    # 1장당 1000원이니, amount//1000 장 생성
+    num_tickets = amount // 1000
+    tickets = []
+    for _ in range(num_tickets):
+        ticket = sorted(random.sample(range(1, 46), 6))
+        tickets.append(ticket)
+
+    # 생성된 번호 출력
+    print(f"🔢 Generated tickets: {tickets}")
+
+    # --- TODO: 여기에 실제 Selenium 구매 로직 삽입 ---
+    # driver = webdriver.Chrome()
+    # ... 로그인 → 구매 요청 ...
+    # driver.quit()
+
+    # 구매 완료 직후 텔레그램 알림
+    send_telegram(f"✅ 로또 구매 완료! 번호: {tickets}")
+
+    return tickets
 
 if __name__ == "__main__":
     purchase_lotto()
-EOF

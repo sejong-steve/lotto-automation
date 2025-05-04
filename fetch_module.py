@@ -1,4 +1,3 @@
-cat > fetch_module.py << 'EOF'
 # fetch_module.py
 import requests
 
@@ -8,4 +7,3 @@ def fetch_latest_results():
 
 if __name__ == "__main__":
     fetch_latest_results()
-EOF
